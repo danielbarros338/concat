@@ -1,4 +1,12 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Post } from '@nestjs/common';
+import { OCRAzureService } from './ocr-azure.service';
 
-@Controller('send-message')
-export class OCRAzureController {}
+@Controller('send-image')
+export class OCRAzureController {
+  constructor(private readonly ocrAzureService: OCRAzureService) {}
+
+  @Post()
+  async sendImage(): Promise<void> {
+    return await this.ocrAzureService.readImage();
+  }
+}
