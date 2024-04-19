@@ -8,6 +8,7 @@ import {
   AzureKeyCredential,
   DocumentAnalysisClient,
 } from '@azure/ai-form-recognizer';
+import { ResponseDIContent } from './interfaces/ocr-azure.interfaces';
 
 @Injectable()
 export class OCRAzureService {
@@ -36,11 +37,16 @@ export class OCRAzureService {
     try {
       const pdf = fs.createReadStream('./tmp/catalogo_compressed.pdf');
       const poller = await client.beginAnalyzeDocument('prebuilt-read', pdf);
-      const { content, pages } = await poller.pollUntilDone();
+      const DIContent = await poller.pollUntilDone();
+
+      const response: ResponseDIContent = {
+        content: DIContent.content,
+        pages: DIContent.pages,
+      };
 
       fs.unlink(pathArchive, () => console.log('Archive removed.'));
 
-      return { content, pages };
+      return response;
     } catch (err) {
       return err.message;
     }
