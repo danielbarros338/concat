@@ -6,7 +6,7 @@ export class OCRAzureController {
   constructor(private readonly ocrAzureService: OCRAzureService) {}
 
   @Post()
-  async sendImage(): Promise<void> {
+  async sendImage(): Promise<any> {
     return await this.ocrAzureService.readImage();
   }
 }

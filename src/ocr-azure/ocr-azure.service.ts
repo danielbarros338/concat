@@ -1,36 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-// import { ImageAnalysisClient } from '@azure-rest/ai-vision-image-analysis';
-import { AzureKeyCredential } from '@azure/core-auth';
-import createClient from '@azure-rest/ai-vision-image-analysis';
+import * as fs from 'fs';
+
+import {
+  AzureKeyCredential,
+  DocumentAnalysisClient,
+} from '@azure/ai-form-recognizer';
 
 @Injectable()
 export class OCRAzureService {
   constructor(private configService: ConfigService) {}
 
-  async readImage(): Promise<void> {
+  async readImage(): Promise<any> {
     const credential = new AzureKeyCredential(
-      this.configService.get<string>('AZURE_VISION_KEY'),
+      this.configService.get<string>('AZURE_DI_KEY'),
     );
 
-    const client = createClient(
-      this.configService.get<string>('AZURE_VISION_ENDPOINT'),
+    const client = new DocumentAnalysisClient(
+      this.configService.get<string>('AZURE_DI_ENDPOINT'),
       credential,
     );
 
-    const features = ['Caption', 'Read'];
-    const imageUrl =
-      'https://learn.microsoft.com/azure/ai-services/computer-vision/media/quickstarts/presentation.png';
+    try {
+      const pdf = fs.createReadStream('./tmp/catalogo_compressed.pdf');
+      const poller = await client.beginAnalyzeDocument('prebuilt-read', pdf);
+      const { content, pages } = await poller.pollUntilDone();
 
-    const result = await client.path('/imageanalysis:analyze').post({
-      body: { url: imageUrl },
-      queryParameters: { features: features },
-      contentType: 'application/json',
-    });
-
-    const iaResult: any = result.body;
-
-    return iaResult.readResult.blocks;
+      return { content, pages };
+    } catch (err) {
+      return err.message;
+    }
   }
 }

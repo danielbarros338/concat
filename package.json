@@ -20,7 +20,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@azure-rest/ai-vision-image-analysis": "^1.0.0-beta.2",
+    "@azure/ai-form-recognizer": "5.0.0",
+    "@azure/identity": "^4.1.0",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
     "@nestjs/core": "^10.0.0",
