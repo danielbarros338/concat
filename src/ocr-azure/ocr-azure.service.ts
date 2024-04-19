@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import * as fs from 'fs';
+import * as path from 'path';
 
 import {
   AzureKeyCredential,
@@ -12,7 +13,7 @@ import {
 export class OCRAzureService {
   constructor(private configService: ConfigService) {}
 
-  async readImage(): Promise<any> {
+  async readImage(base64: string, archiveName: string): Promise<any> {
     const credential = new AzureKeyCredential(
       this.configService.get<string>('AZURE_DI_KEY'),
     );
@@ -22,10 +23,22 @@ export class OCRAzureService {
       credential,
     );
 
+    const pathArchive = path.join(`./tmp/${archiveName}.pdf`);
+
+    try {
+      const archive = Buffer.from(base64, 'base64');
+
+      fs.writeFileSync(pathArchive, archive);
+    } catch (err) {
+      return err.message;
+    }
+
     try {
       const pdf = fs.createReadStream('./tmp/catalogo_compressed.pdf');
       const poller = await client.beginAnalyzeDocument('prebuilt-read', pdf);
       const { content, pages } = await poller.pollUntilDone();
+
+      fs.unlink(pathArchive, () => console.log('Archive removed.'));
 
       return { content, pages };
     } catch (err) {
