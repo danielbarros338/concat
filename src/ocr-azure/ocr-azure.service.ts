@@ -35,7 +35,7 @@ export class OCRAzureService {
     }
 
     try {
-      const pdf = fs.createReadStream('./tmp/catalogo_compressed.pdf');
+      const pdf = fs.createReadStream(pathArchive);
       const poller = await client.beginAnalyzeDocument('prebuilt-read', pdf);
       const DIContent = await poller.pollUntilDone();
 
