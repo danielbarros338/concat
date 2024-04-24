@@ -32,7 +32,10 @@ export class OpenAIGPTService {
     const completion = await openAI.chat.completions.create({
       messages: [
         { role: 'system', content: prompt + pdfContent },
-        { role: 'user', content: 'Just returns a JSON with catalog' },
+        {
+          role: 'user',
+          content: this.configService.get<string>('PROMPT_ACTION'),
+        },
       ],
       model: this.configService.get<string>('OPENAI_GPT_MODEL'),
       temperature: 0,
