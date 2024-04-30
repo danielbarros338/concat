@@ -1,4 +1,4 @@
-# Sigia
+# Concat - PDF Catalogs
 
 <div align="center">
 
