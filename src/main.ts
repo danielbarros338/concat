@@ -7,6 +7,8 @@ async function bootstrap() {
   app.use(json({ limit: '100mb' }));
   app.use(urlencoded({ extended: true, limit: '100mb' }));
 
+  app.setGlobalPrefix('api');
+
   await app.listen(process.env.PORT);
 }
 bootstrap();
