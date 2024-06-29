@@ -12,7 +12,7 @@ import { PdfFormaterModule } from './pdf-formater/pdf-formater.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client/dist'),
+      rootPath: join(__dirname, '..', 'client'),
     }),
     OpenAIGPTModule,
     OCRAzureModule,
